@@ -2,7 +2,7 @@
     "display_name": "💰 API 余额查询！",
     "name": "api-balance-checker",
     "js": "index.js",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "author": "YourName",
     "description": "在扩展面板中一键查询当前填写的 API 接口剩余额度"
 }
