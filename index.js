@@ -1,5 +1,5 @@
 jQuery(async () => {
-    // 1. 构建 UI 界面
+    // 1. 构建 UI 界面 (已彻底移除抓取按钮，界面极致清爽)
     const extensionHtml = `
         <div class="extension-settings" id="api-balance-checker-settings">
             <div class="inline-drawer">
@@ -9,14 +9,6 @@ jQuery(async () => {
                 </div>
                 <div class="inline-drawer-content" style="padding: 10px;">
                     
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: nowrap;">
-                        <label style="font-size: 13px; color: var(--SmartThemeBodyColor); font-weight: bold; margin: 0; white-space: nowrap;">接口与密钥设置</label>
-                        
-                        <div id="btn_api_autograb" class="menu_button interactable" style="font-size: 12px; padding: 5px 10px; margin: 0 0 0 10px; white-space: nowrap !important; word-break: keep-all; flex-shrink: 0; min-width: max-content; display: inline-block;" title="同步当前酒馆的接口地址">
-                            <i class="fa-solid fa-arrows-rotate" style="margin-right: 4px;"></i> 抓取当前API设定
-                        </div>
-                    </div>
-
                     <div style="margin-bottom: 12px;">
                         <label style="font-size: 13px; color: var(--SmartThemeBodyColor); font-weight: bold; margin-bottom: 5px; display: block;">接口地址 (Base URL)</label>
                         <input type="text" id="api_check_url" class="text_pole" placeholder="例如: https://api.yourdomain.com" style="width: 100%; box-sizing: border-box;">
@@ -42,7 +34,7 @@ jQuery(async () => {
 
     $('#extensions_settings').append(extensionHtml);
 
-    // 2. 加解密与掩码工具 (加密盐也更换了，确保更安全)
+    // 2. 加解密与掩码工具
     const SECRET_SALT = "SillyTavern_API_Secret_2026"; 
     
     function encryptData(text) {
@@ -108,56 +100,6 @@ jQuery(async () => {
             $(this).val(getMaskedKey(realApiKey));
         }
     });
-
-    // 智能抓取逻辑
-    function autoGrabSettings() {
-        let foundUrl = "";
-        let foundKey = "";
-
-        let visibleUrl = $('#api_settings input[type="text"]:visible, #chat_completion_settings_panel input[type="text"]:visible, input[type="url"]:visible').filter(function() {
-            let id = $(this).attr('id') || '';
-            return id.includes('url') || id.includes('api');
-        }).first();
-        if (visibleUrl.length > 0 && visibleUrl.val()) {
-            foundUrl = visibleUrl.val();
-        } else {
-            const ST_URL_IDS = ['#chat_completion_url_openai', '#api_url_openai', '#chat_completion_url_custom', '#api_url_custom', '#chat_completion_url'];
-            for (let id of ST_URL_IDS) { if ($(id).val()) { foundUrl = $(id).val(); break; } }
-        }
-
-        let visiblePwd = $('#api_settings input[type="password"]:visible, #chat_completion_settings_panel input[type="password"]:visible').first();
-        if (visiblePwd.length > 0 && visiblePwd.val()) {
-            foundKey = visiblePwd.val();
-        } else {
-            const ST_KEY_IDS = ['#chat_completion_api_key_openai', '#api_key_openai', '#chat_completion_api_key_custom', '#api_key_custom'];
-            for (let id of ST_KEY_IDS) { if ($(id).val()) { foundKey = $(id).val(); break; } }
-        }
-        
-        if (foundKey && foundKey.includes('*')) {
-            foundKey = ""; 
-        }
-
-        let applied = false;
-        if (foundUrl && foundUrl.trim() !== '') {
-            $('#api_check_url').val(foundUrl.trim());
-            localStorage.setItem(STORAGE_KEY_URL, foundUrl.trim());
-            applied = true;
-        }
-        if (foundKey && foundKey.trim() !== '') {
-            realApiKey = foundKey.trim();
-            $('#api_check_key').val(getMaskedKey(realApiKey));
-            localStorage.setItem(STORAGE_KEY_KEY, encryptData(realApiKey));
-            applied = true;
-        }
-
-        if (applied) {
-            toastr.success('地址同步成功！(由于酒馆安全机制，Key若被隐藏请手动输入)');
-        } else {
-            toastr.warning('同步失败，请手动填写。');
-        }
-    }
-
-    $('#btn_api_autograb').on('click', function() { autoGrabSettings(); });
 
     // 4. 执行查询逻辑
     $('#btn_check_api_balance').on('click', async function() {
