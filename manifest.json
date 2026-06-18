@@ -1,6 +1,6 @@
 {
-    "display_name": "💰 OneAPI 余额查询",
-    "name": "oneapi-balance-checker",
+    "display_name": "💰 API 余额查询",
+    "name": "api-balance-checker",
     "js": "index.js",
     "version": "1.0.0",
     "author": "YourName",
