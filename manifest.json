@@ -1,0 +1,8 @@
+{
+    "display_name": "💰 OneAPI 余额查询",
+    "name": "oneapi-balance-checker",
+    "js": "index.js",
+    "version": "1.0.0",
+    "author": "YourName",
+    "description": "在扩展面板中一键查询当前填写的 API 接口剩余额度"
+}
